@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+  labels:
+    app: expense-mysql
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: expense-mysql
+
+  template:
+    metadata:
+      labels:
+        app: expense-mysql
+
+    spec:
+      containers:
+        - name: expense-mysql
+          image: mysql:8.0
+
+          ports:
+            - containerPort: 3306
+
+          resources:
+            requests:
+              cpu: "550m"
+              memory: "512Mi"
+            limits:
+              cpu: "600m"
+              memory: "1Gi"
+
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+
+          livenessProbe:
+            exec:
+              command: ["mysqladmin", "ping", "-h", "localhost"]
+            initialDelaySeconds: 15
+            periodSeconds: 20
+
+          readinessProbe:
+            exec:
+              command: ["mysqladmin", "ping", "-h", "localhost"]
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          env:
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: expenseflow-cm
+                  key: DB_NAME
+
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: expenseflow-secret
+                  key: DB_USER
+
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: expenseflow-secret
+                  key: DB_PASSWORD
+
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: expenseflow-secret
+                  key: MYSQL_ROOT_PASSWORD
+
+          securityContext:
+            allowPrivilegeEscalation: false
+
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: my-pvc

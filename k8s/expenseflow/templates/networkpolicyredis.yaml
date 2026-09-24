@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Values.Networkpolicy.redis.name }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ .Values.redis.label }}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: {{ .Values.backend.label }}
+   
+    ports:
+    - protocol: TCP
+      port: {{ .Values.redis.port }}
+       

@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Values.Networkpolicy.mysql.name }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ .Values.mysql.label }}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: {{ .Values.backend.label }}
+   
+    ports:
+    - protocol: TCP
+      port: {{ .Values.mysql.port }}
+       

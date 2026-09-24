@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment-expense
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-expense
+  template:
+    metadata:
+      labels:
+        app: backend-expense
+    spec:
+      serviceAccountName: expenseflow-app-sa
+      containers:
+        - name: expenseflow-backend
+          image: backend-expense:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          envFrom:
+            - configMapRef:
+                name: expenseflow-cm
+            - secretRef:
+                name: expenseflow-secret
+          livenessProbe:
+            httpGet:
+              path: /healthz/live
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /healthz/ready
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          securityContext:
+            runAsNonRoot: false
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]

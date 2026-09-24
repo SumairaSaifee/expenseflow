@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.backend.name }} 
+spec:
+  replicas: {{ .Values.backend.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.backend.label }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.backend.label }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      securityContext:
+        runAsNonRoot: {{ .Values.backend.runAsNonRoot }}
+        runAsUser: {{ .Values.backend.runAsUser }}
+      containers:
+        - name: {{ .Values.backend.containerName }}
+          image: {{ .Values.backend.image }}:{{ .Values.backend.tag }}
+          imagePullPolicy: {{ .Values.backend.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.backend.port }}
+          resources:
+            requests:
+              cpu: {{ .Values.backend.resources.requests.cpu | quote }}
+              memory: {{ .Values.backend.resources.requests.memory | quote }}
+            limits:
+              cpu: {{ .Values.backend.resources.limits.cpu | quote }}
+              memory: {{ .Values.backend.resources.limits.memory | quote }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.configMap.name }}
+            - secretRef:
+                name: {{ .Values.secret.name }}
+          livenessProbe:
+            httpGet:
+              path: /healthz/live
+              port: {{ .Values.backend.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /healthz/ready
+              port: {{ .Values.backend.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]

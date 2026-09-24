@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: {{ .Values.rq.name }}
+  namespace: default
+
+spec:
+  hard:
+    requests.cpu: {{ .Values.rq.reqcpu }}
+    requests.memory: {{ .Values.rq.reqmemory }}
+
+    limits.cpu: {{ .Values.rq.limitscpu }}
+    limits.memory: {{ .Values.rq.limitsmemory }}
+
+    pods: {{ .Values.rq.podsno }}

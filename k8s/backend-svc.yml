@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  labels:
+    app: backend-expense
+spec:
+  selector:
+    app: backend-expense
+  ports:
+    - name: http
+      protocol: TCP
+      port: 5000
+      targetPort: 5000

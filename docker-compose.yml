@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+  web:
+    image: frontend-expense:latest
+    ports:
+      - 80:80
+    networks:
+      - expenseflow-net
+    depends_on:
+      - backend
+
+  backend:
+    image: backend-expense:latest
+    ports:
+      - 5000:5000
+    networks:
+      - expenseflow-net
+    environment:
+      DB_HOST: database
+      DB_PORT: 3306
+      DB_USER: expense_user
+      DB_PASSWORD: expense_pass
+      DB_NAME: expenses
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: 2c4b9d7a5f8e1c3d6a9b4f7e8d1c5a2b9e6f3d8c1a7b5e9f2d4c6a8b1e3f5d7
+    depends_on:
+      - database
+      - redis
+
+  database:
+    image: mysql:8.0
+    environment:
+      DB_PASSWORD: expense_pass
+      DB_NAME: "expenses"
+      DB_USER: expense_user
+      DB_HOST: "mysql"
+    ports:
+      - 3306:3306
+    networks:
+      - expenseflow-net
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - 6379:6379
+    networks:
+      - expenseflow-net
+
+networks:
+  expenseflow-net:
+
+volumes:
+  mysql-data:

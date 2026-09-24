@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.frontend.name }}
+spec:
+  replicas: {{ .Values.frontend.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.frontend.label }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.frontend.label }}
+    spec:
+      securityContext:
+        runAsNonRoot: {{ .Values.frontend.runAsNonRoot }}
+      containers:
+        - name: {{ .Values.frontend.containerName }}
+          image: {{ .Values.frontend.image }}:{{ .Values.frontend.tag }}
+          imagePullPolicy: {{ .Values.frontend.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.frontend.port }}
+          resources:
+            requests:
+              cpu: {{ .Values.frontend.requests.cpu }}
+              memory: {{ .Values.frontend.requests.memory }}
+            limits:
+              cpu: {{ .Values.frontend.limits.cpu }}
+              memory: {{ .Values.frontend.limits.memory }}
+          securityContext:
+            allowPrivilegeEscalation: false

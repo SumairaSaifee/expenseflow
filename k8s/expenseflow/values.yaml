@@ -1,0 +1,226 @@
+#configmap
+configMap:
+  name: expenseflow-cm
+
+config:
+  dbHost: mysql
+  dbPort: "3306"
+  dbName: expenses
+  redisHost: redis
+  redisPort: "6379"
+  port: "5000"
+
+
+
+#namespace
+namespace:
+  name: default
+
+#secrets
+secret:
+  name: expenseflow-secret
+  dbUser: expense_user
+  dbPassword: expense_pass
+  mysqlRootPassword: root123
+  jwtSecret: 2c4b9d7a5f8e1c3d6a9b4f7e8d1c5a2b9e6f3d8c1a7b5e9f2d4c6a8b1e3f5d7
+
+#backend-deployment
+serviceAccount:
+  name: expenseflow-app-sa
+
+backend:
+  name: backend-deployment-expense
+  label: backend-expense
+  containerName: expenseflow-backend
+  image: backend-expense
+  tag: latest
+  imagePullPolicy: IfNotPresent
+  port: 5000
+  replicas: 1
+  runAsNonRoot: false
+  runAsUser: 1000
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "256Mi"
+
+#backend-svc
+backendService:
+  name: backend-service
+
+#frontend
+
+frontend:
+  name: frontend-deployment-expense
+  replicas: 1
+  label: frontend-expense
+  runAsNonRoot: false
+  containerName: expenseflow-frontend
+  image: frontend-expense
+  tag: latest
+  imagePullPolicy: IfNotPresent
+  port: 80
+
+  requests:
+    cpu: "50m"
+    memory: "64Mi"
+
+  limits:
+    cpu: "100m"
+    memory: "128Mi"
+
+
+#frontend-svc
+frontendService:
+  name: frontend-service
+
+#mysql
+
+mysql:
+  name: mysql-deployment
+  label: expense-mysql
+  replicas: 1
+  containerName: expense-mysql
+  image: mysql
+  tag: "8.0"
+  port: 3306
+
+  resources:
+    requests:
+      cpu: "550m"
+      memory: "512Mi"
+    limits:
+      cpu: "600m"
+      memory: "1Gi"
+
+  pvcName: my-pvc
+
+
+
+#mysqlservice
+mysqlService:
+  name: mysql
+
+
+#redisdeployment
+
+redis:
+  name: redis-deployment
+  label: redis
+  replicas: 1
+  containerName: redis
+  image: redis
+  tag: 7-alpine
+  port: 6379
+  requests: 
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "250m"
+    memory: "256Mi"
+
+#redis-svc
+redisService:
+  name: redis
+
+#pv-yaml
+pv:
+  name: my-pv
+  storage: 1Gi
+
+#pvc.yaml
+pvc:
+  name: my-pvc
+  storage: 1Gi
+
+
+#horizontal-pod-autoscaler
+hpa:
+  name: backend-hpa
+  minReplicas: 1
+  maxReplicas: 5
+  targetcpu: 60
+
+
+#resourcequota
+rq:
+  name: expenseflow-resource-quota
+  reqcpu: "1500m"
+  reqmemory: "2Gi"
+  limitscpu: "3"
+  limitsmemory: "3Gi"
+  podsno: "10"
+
+
+#limitrange
+limits:
+  name: expenseflow-limit-range
+  defaultRequest:
+    cpu: "100m"
+    memory: "128Mi"
+  default:
+    cpu: "500m"
+    memory: "512Mi"
+  min:
+    cpu: "50m"
+    memory: "64Mi"
+  max:
+    cpu: "1"
+    memory: "1Gi"
+
+
+#mysql-networkpolicy
+
+Networkpolicy:
+  mysql:
+    name: allow-backend-to-mysql
+
+  redis:
+    name: allow-backend-to-redis
+    
+
+#role
+role:
+  name: expenseflow-role
+
+#rolebinding
+
+rolebinding:
+  name: expenseflow-binding
+  
+
+
+#servicemonitor
+
+servicemonitor:
+  name: expense-backend-monitor
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
