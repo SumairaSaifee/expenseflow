@@ -21,6 +21,10 @@ jobs:
         working-directory: backend
         run: npm install
 
+      - name: Fix permissions
+        working-directory: backend
+        run: chmod +x node_modules/.bin/*
+
       - name: Run backend tests
         working-directory: backend
         run: npm test --if-present
