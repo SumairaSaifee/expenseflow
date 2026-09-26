@@ -36,7 +36,7 @@ backend:
   tag: latest
   imagePullPolicy: IfNotPresent
   port: 5000
-  replicas: 1
+  replicas: 2
   runAsNonRoot: false
   runAsUser: 1000
   resources:
