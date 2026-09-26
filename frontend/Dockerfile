@@ -3,8 +3,8 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
-RUN chmod +x node_modules/.bin/*
 COPY . .
+RUN chmod +x node_modules/.bin/*
 RUN npm run build
 
 #serving files using nginx
