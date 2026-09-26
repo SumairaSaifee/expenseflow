@@ -33,6 +33,10 @@ jobs:
         working-directory: frontend
         run: npm install
 
+      - name: Fix permissions
+        working-directory: frontend
+        run: chmod +x node_modules/.bin/*
+
       - name: Build frontend
         working-directory: frontend
         run: npm run build
