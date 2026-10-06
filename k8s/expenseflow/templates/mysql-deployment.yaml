@@ -29,6 +29,9 @@ spec:
           volumeMounts:
             - name: mysql-storage
               mountPath: /var/lib/mysql
+              {{- if .Values.mysql.subPath }}
+              subPath: {{ .Values.mysql.subPath }}
+              {{- end }}
           livenessProbe:
             exec:
               command: ["mysqladmin", "ping", "-h", "localhost"]

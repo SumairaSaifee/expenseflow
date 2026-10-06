@@ -1,0 +1,25 @@
+storageClassName: gp3
+
+storageClass:
+  create: true
+
+pv:
+  enabled: false
+
+serviceMonitor:
+  enabled: false
+
+
+mysql:
+  subPath: mysql
+
+
+backend:
+  image: sumairasaifee/backend
+  tag: latest
+  imagePullPolicy: Always
+
+frontend:
+  image: sumairasaifee/expenseflow-frontend
+  tag: latest
+  imagePullPolicy: Always

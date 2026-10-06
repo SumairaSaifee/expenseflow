@@ -87,7 +87,7 @@ mysql:
   image: mysql
   tag: "8.0"
   port: 3306
-
+  subPath: ""
   resources:
     requests:
       cpu: "550m"
@@ -130,6 +130,8 @@ redisService:
 pv:
   name: my-pv
   storage: 1Gi
+  enabled: true
+storageClassName: standard-ssd
 
 #pvc.yaml
 pvc:
@@ -194,16 +196,15 @@ rolebinding:
 
 
 #servicemonitor
-
-servicemonitor:
+serviceMonitor:
   name: expense-backend-monitor
+  interval: 15s
+  enabled: true
 
 
-
-
-
-
-
+#storageClass
+storageClass:
+  create: false
 
 
 

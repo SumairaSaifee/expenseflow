@@ -18,4 +18,4 @@ spec:
 
       storage: {{ .Values.pvc.storage }}
 
-  storageClassName: standard-ssd
+  storageClassName: {{ .Values.storageClassName }}

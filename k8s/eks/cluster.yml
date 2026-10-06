@@ -15,6 +15,7 @@ addons:
   - name: aws-ebs-csi-driver
     podIdentityAssociations:
       - serviceAccountName: ebs-csi-controller-sa
+        namespace: kube-system
         permissionPolicyARNs:
           - arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy
 managedNodeGroups:
