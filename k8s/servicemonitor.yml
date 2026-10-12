@@ -1,17 +1,20 @@
+{{- if .Values.monitoring.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: expense-backend-monitor
   namespace: default
   labels:
-   release: monitoring
+    release: monitoring
 spec:
- selector:
-   matchLabels:
-     app: backend-expense
- namespaceSelector:
-   matchNames: ["default"]
- endpoints:
-   - port: http
-     path: /metrics
-     interval: 15s
+  selector:
+    matchLabels:
+      app: backend-expense
+  namespaceSelector:
+    matchNames:
+      - default
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+{{- end }}

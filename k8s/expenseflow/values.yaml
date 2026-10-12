@@ -207,7 +207,8 @@ storageClass:
   create: false
 
 
-
+monitoring:
+  enabled: false
 
 
 
