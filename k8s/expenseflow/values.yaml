@@ -199,16 +199,13 @@ rolebinding:
 serviceMonitor:
   name: expense-backend-monitor
   interval: 15s
-  enabled: true
+  enabled: false
 
 
 #storageClass
 storageClass:
   create: false
 
-
-monitoring:
-  enabled: false
 
 
 
