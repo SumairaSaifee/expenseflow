@@ -32,8 +32,8 @@ backend:
   name: backend-deployment-expense
   label: backend-expense
   containerName: expenseflow-backend
-  image: backend-expense
-  tag: latest
+  image: sumairasaifee/backend-expense
+  tag: v1
   imagePullPolicy: IfNotPresent
   port: 5000
   replicas: 2
@@ -59,8 +59,8 @@ frontend:
   label: frontend-expense
   runAsNonRoot: false
   containerName: expenseflow-frontend
-  image: frontend-expense
-  tag: latest
+  image: sumairasaifee/frontend-expense
+  tag: v1
   imagePullPolicy: IfNotPresent
   port: 80
 
